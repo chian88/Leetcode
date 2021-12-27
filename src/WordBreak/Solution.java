@@ -1,32 +1,43 @@
 package WordBreak;
 import java.util.*;
 
-public class Solution {
+class Solution {
+	String s;
+	Set<String> wordSet;
+	public boolean wordBreak(String s, List<String> wordDict) {
+		this.wordSet = new HashSet<>();
+		this.s = s;
 
-	public static boolean wordBreak(String s, List<String> wordDict) {
-		return wordBreakRecur(s, new HashSet<>(wordDict), 0, new Boolean[s.length()]);
-	}
-
-	private static boolean wordBreakRecur(String s, Set<String> wordDict, int start, Boolean[] memo) {
-		if (start == s.length()) return true;
-
-		if (memo[start] != null) {
-			return memo[start];
+		Boolean[] dp = new Boolean[s.length()];
+		for (String word : wordDict) {
+			wordSet.add(word);
 		}
 
-		for (int end = start + 1; end <= s.length() ; end++) {
+		return recursion(0, dp);
+	}
+
+	boolean recursion(int start, Boolean[] dp) {
+
+		if (start >= s.length()) {
+			return true;
+		}
+
+		if (dp[start] != null) {
+			return dp[start];
+		}
+
+		for (int end = start + 1; end <= s.length(); ++end) {
 			String subStr = s.substring(start, end);
-			if (wordDict.contains(s.substring(start, end)) && wordBreakRecur(s, wordDict, end, memo)) {
-				return memo[start] = true;
+
+			if (wordSet.contains(subStr)) {
+				boolean next = recursion(end, dp);
+				if (next) {
+					dp[start] = true;
+					return true;
+				}
 			}
 		}
-
-		return memo[start] = false;
-	}
-
-	public static void main(String[] args) {
-
-
-		wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat"));
+		dp[start] = false;
+		return false;
 	}
 }

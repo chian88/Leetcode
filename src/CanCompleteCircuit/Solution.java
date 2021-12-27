@@ -39,4 +39,9 @@ class Solution {
 
 		return minGasIdx;
 	}
+
+	public static void main(String[] args) {
+		Solution test = new Solution();
+		test.canCompleteCircuit(new int[]{1,2,3,4,5}, new int[]{3,4,5,1,2});
+	}
 }

@@ -15,74 +15,26 @@ class Node {
 
 
 class Solution {
+	Map<Node, Node> visited = new HashMap<>();
+
 	public Node copyRandomList(Node head) {
-		if (head == null) return null;
-		List<Integer> randomOrder = new ArrayList<>();
-		Node res =  new Node(head.val);
-		randomOrder.add(countRandomOrder(head, head.random));
-		Node resIter = res;
-		Node headIter = head;
-		while (headIter.next != null) {
-			resIter.next = new Node(headIter.next.val);
-			randomOrder.add(countRandomOrder(head, headIter.next.random ));
-			headIter = headIter.next;
-			resIter = resIter.next;
-
-		}
-		resIter = res;
-		Iterator<Integer> randomOrderIter = randomOrder.iterator();
-		while (resIter != null) {
-			int order = randomOrderIter.next();
-			resIter.random = fetchNode(res, order);
-			resIter = resIter.next;
+		if (head == null) {
+			return null;
 		}
 
-
-
-		return res;
-	}
-
-	Node fetchNode(Node head, int order) {
-		if (order == -1) return null;
-
-		while (order > 0) {
-			head = head.next;
-			order -= 1;
+		if (visited.containsKey(head)) {
+			return visited.get(head);
 		}
 
-		return head;
-	}
+		Node newNode = new Node(head.val);
+		newNode.next = null;
+		newNode.random = null;
 
-	int countRandomOrder(Node head, Node random) {
-		int order = 0;
-		if (random == null) return -1;
-		while (head != random) {
-			order += 1;
-			head = head.next;
-		}
+		visited.put(head, newNode);
 
-		return order;
-	}
+		newNode.next = copyRandomList(head.next);
+		newNode.random = copyRandomList(head.random);
 
-	public static void main(String[] args) {
-		Node seven = new Node(7);
-		Node thirteen = new Node(13);
-		Node eleven = new Node(11);
-		Node ten = new Node(10);
-		Node one = new Node(1);
-
-		seven.random = null;
-		seven.next = thirteen;
-		thirteen.random = seven;
-		thirteen.next = eleven;
-		eleven.next = ten;
-		eleven.random = one;
-		ten.next = one;
-		ten.random = eleven;
-		one.next = null;
-		one.random = seven;
-
-		Solution test = new Solution();
-		test.copyRandomList(seven);
+		return newNode;
 	}
 }
